@@ -1,0 +1,11 @@
+.thumbnail-size {
+  height: 50px;
+  width: 50px;
+  display: flex;
+  margin: 10px;
+}
+.btn {
+  background-color: transparent;
+  border: 0px;
+  outline: none;
+}
