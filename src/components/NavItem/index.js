@@ -12,12 +12,12 @@ const NavItem = props => {
             alt="website logo"
           />
           <div className="score-container">
-            <p>Score:{score}</p>
+            <p className="score">Score:{score}</p>
             <img
               src="https://assets.ccbp.in/frontend/react-js/match-game-timer-img.png"
               alt="timer"
             />
-            <p>{time} Sec</p>
+            <p>{time} sec</p>
           </div>
         </nav>
       </div>

@@ -1,9 +1,15 @@
 import {Component} from 'react'
 import NavItem from '../NavItem'
-import TabItem from '../TabItem'
 import ImageItem from '../ImageItem'
+import TabItem from '../TabItem'
 
 import './index.css'
+
+const tabsList = [
+  {tabId: 'FRUIT', displayText: 'Fruits'},
+  {tabId: 'ANIMAL', displayText: 'Animals'},
+  {tabId: 'PLACE', displayText: 'Places'},
+]
 
 const imagesList = [
   {
@@ -247,143 +253,126 @@ const imagesList = [
 
 class Game extends Component {
   state = {
-    activeId: 'FRUIT',
-    imageShowing: imagesList[0],
     score: 0,
-    isGameOver: false,
-    time: 20,
+    time: 60,
+    gameProgress: true,
+    activeTabId: tabsList[0].tabId,
+    activeImg: imagesList[0].imageUrl,
   }
 
   componentDidMount() {
-    this.intervalId = setInterval(this.decrementTime, 1000)
+    this.intervalId = setInterval(this.setTime, 1000)
   }
 
   componentWillUnmount() {
-    this.clearTimerInterval()
+    clearInterval(this.intervalId)
   }
 
-  clearTimerInterval = () => clearInterval(this.intervalId)
-
-  decrementTime = () => {
-    const {time} = this.state
-    this.setState({time: time - 1})
+  setTime = () => {
+    this.setState(PreState => ({time: PreState.time - 1}))
   }
 
-  clearTimerInterval = () => clearInterval(this.intervalId)
-
-  getFilterList = () => {
-    const {activeId} = this.state
-
-    const filterList = imagesList.filter(
-      eachOne => eachOne.category === activeId,
-    )
-    return filterList
+  gameOver = () => {
+    const {score} = this.state
+    this.setState({time: 0, score, gameProgress: false})
+    this.componentWillUnmount()
   }
 
-  finishGame = () => {
-    this.setState({isGameOver: true, time: 0})
-    this.clearTimerInterval()
-  }
+  clickChangeImg = clickedId => {
+    const {time, activeImg} = this.state
+    const clickedImg = imagesList.filter(eachImg => eachImg.id === clickedId)
+    console.log(time)
+    const randomImg =
+      imagesList[Math.floor(Math.random() * imagesList.length + 1)]
 
-  clickToChangeImg = id => {
-    const lengthOfList = imagesList.length
-    const {imageShowing, time, score} = this.state
-
-    const randomNumber = Math.floor(Math.random() * lengthOfList)
-    const nxtImg = imagesList[randomNumber]
-
-    if (time === 0) {
-      this.finishGame()
-    } else if (id === imageShowing.id) {
-      this.setState({imageShowing: nxtImg, score: score + 1})
+    if (activeImg !== clickedImg[0].imageUrl) {
+      this.gameOver()
+      this.componentWillUnmount()
     } else {
-      this.finishGame()
+      this.setState({activeImg: randomImg.imageUrl, time})
+      this.setState(preState => ({score: preState.score + 1}))
     }
   }
 
-  clickToGetCategory = tabValue => {
-    this.setState({activeId: tabValue})
+  renderTime = () => {
+    const {time} = this.state
+    if (time <= 0) {
+      this.setState({gameProgress: false, time: 0})
+      this.componentWillUnmount()
+    }
   }
 
-  renderImageList = () => {
-    const {activeId, imageShowing} = this.state
-    const {tabsList} = this.props
-    const filterImageList = this.getFilterList()
+  renderOfImage = () => {
+    const {activeTabId, activeImg} = this.state
+    const filterImages = imagesList.filter(
+      eachOne => eachOne.category === activeTabId,
+    )
 
     return (
-      <div>
-        <img
-          src={imageShowing.imageUrl}
-          alt={imageShowing.imageUrl}
-          className="img-display"
-        />
-        <div className="tab-container">
-          <ul className="list-items">
-            {tabsList.map(tabDetails => (
-              <TabItem
-                tabDetails={tabDetails}
-                key={tabDetails.tabId}
-                clickToGetCategory={this.clickToGetCategory}
-                isActive={activeId === tabDetails.tabId}
-              />
-            ))}
-          </ul>
-        </div>
+      <div className="app">
+        {this.renderTime()}
+        <img src={activeImg} alt="activeImage" className="main-img" />
+        <ul className="tab-container">
+          {tabsList.map(eachTab => (
+            <TabItem
+              tabDetails={eachTab}
+              key={eachTab.tabId}
+              clickToChangeTab={this.clickToChangeTab}
+              isActive={eachTab.tabId === activeTabId}
+            />
+          ))}
+        </ul>
 
-        <div className="image-container">
-          <ul className="list-img">
-            {filterImageList.map(eachItem => (
-              <ImageItem
-                imagesDetails={eachItem}
-                key={eachItem.id}
-                clickToChangeImg={this.clickToChangeImg}
-              />
-            ))}
-          </ul>
-        </div>
+        <ul className="image-container">
+          {filterImages.map(eachImage => (
+            <ImageItem
+              imageDetails={eachImage}
+              key={eachImage.id}
+              clickChangeImg={this.clickChangeImg}
+            />
+          ))}
+        </ul>
       </div>
     )
   }
 
-  ReStartGame = () => {
-    this.setState({isGameOver: false, score: 0, time: 60})
+  clickToChangeTab = tab => {
+    this.setState({activeTabId: tab})
   }
 
-  renderScoreCard = () => {
+  resetGame = () => {
+    this.setState({
+      gameProgress: true,
+      time: 60,
+      score: 0,
+      activeImg: imagesList[0].imageUrl,
+    })
+    this.componentDidMount()
+  }
+
+  renderOfScoreCard = () => {
     const {score} = this.state
     return (
-      <div className="gameOver">
-        <div>
-          <img
-            className="trophy"
-            src="https://assets.ccbp.in/frontend/react-js/match-game-trophy.png "
-            alt="trophy"
-          />
-        </div>
-        <p>YOUR SCORE</p>
+      <div className="score-card">
+        <h1>Your Score</h1>
         <p>{score}</p>
-        <button type="button" onClick={this.ReStartGame}>
-          <img
-            src="https://assets.ccbp.in/frontend/react-js/match-game-play-again-img.png"
-            alt="reset"
-          />
-          PLAY AGAIN
+        <button type="button" onClick={this.resetGame}>
+          Play Again
         </button>
       </div>
     )
   }
 
   render() {
-    const {isGameOver, time, score} = this.state
-    return (
-      <div className="">
-        <ul>
-          <NavItem time={time} score={score} />
-        </ul>
+    const {score, time, gameProgress} = this.state
 
-        <div className="app">
-          {isGameOver ? this.renderScoreCard() : this.renderImageList()}
+    return (
+      <div>
+        <div className="nav-bar">
+          <NavItem score={score} time={time} />
         </div>
+
+        {gameProgress ? this.renderOfImage() : this.renderOfScoreCard()}
       </div>
     )
   }

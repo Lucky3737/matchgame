@@ -2,7 +2,7 @@
   height: 200px;
   width: 200px;
 }
-.gameOver {
+.score-card {
   background-image: url('https://assets.ccbp.in/frontend/react-js/match-game-score-card-lg-bg.png');
   align-items: center;
   justify-content: flex-end;
@@ -19,13 +19,13 @@
   margin-top: 30px;
 }
 .app {
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   background-image: url('https://assets.ccbp.in/frontend/react-js/match-game-bg.png');
   background-size: cover;
-  align-items: center;
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-direction: column;
 }
 .tab-container {
@@ -41,9 +41,16 @@
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  width: 600px;
+  width: 50%;
 }
 .list-img {
   display: flex;
   flex-wrap: wrap;
+}
+.nav-bar {
+  width: 100%;
+  margin-top: 0px;
+}
+.main-img {
+  height: 300px;
 }

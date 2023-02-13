@@ -1,11 +1,11 @@
 import './index.css'
 
 const ImageItem = props => {
-  const {imagesDetails, clickToChangeImg} = props
-  const {id, thumbnailUrl} = imagesDetails
+  const {imageDetails, clickChangeImg} = props
+  const {id, thumbnailUrl} = imageDetails
 
   const clickToShowImage = () => {
-    clickToChangeImg(id)
+    clickChangeImg(id)
   }
 
   return (

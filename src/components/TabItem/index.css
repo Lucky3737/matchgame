@@ -1,9 +1,15 @@
 .btn-tab {
-  border-bottom: 4px solid darkmagenta;
-}
-.btn {
   height: 40px;
   width: 100px;
   margin: 20px;
-  background-color: aliceblue;
+}
+
+.active-btn {
+  border-bottom: 4px solid darkmagenta;
+}
+
+.list-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
